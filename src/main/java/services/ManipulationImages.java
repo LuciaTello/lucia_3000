@@ -9,8 +9,35 @@ import java.io.IOException;
 
 public class ManipulationImages {
 
+    private Double PROPORTION = 0.5624;
 
-    public BufferedImage cropLinePixel(int pixel, BufferedImage originalImage, DirectionEnum directionEnum, CroppedType croppedType, int contBalayage) throws IOException {
+    public BufferedImage cropOneLinePixel(BufferedImage originalImage, int contBalayage) throws IOException {
+
+        int height = originalImage.getHeight();
+        int width = originalImage.getWidth();
+
+        Integer targetHeight = 1;
+        Integer targetWidth = width;
+
+        int xc = 0;
+        int yc = contBalayage;
+
+        // Crop
+        return originalImage.getSubimage(
+                xc,
+                yc,
+                targetWidth, // width
+                targetHeight // height
+        );
+    }
+
+    public BufferedImage appendCroppedOneLinePixel() {
+        BufferedImage resultat = null;
+
+        return resultat;
+    }
+
+    public BufferedImage cropLinePixelVideoToImage(int pixel, BufferedImage originalImage, DirectionEnum directionEnum, CroppedType croppedType, int contBalayage) throws IOException {
 
         int height = originalImage.getHeight();
         int width = originalImage.getWidth();
@@ -57,6 +84,40 @@ public class ManipulationImages {
                 targetWidth, // width
                 targetHeight // height
         );
+    }
+
+    public BufferedImage appendFullHeight(BufferedImage initialImage) {
+        BufferedImage resultat = null;
+        Graphics2D g2;
+
+        int widthOriginal = initialImage.getWidth();
+        int height = (int) Math.round(widthOriginal * PROPORTION);
+
+        int w = initialImage.getWidth();
+        int h1 = initialImage.getHeight();
+
+        int hMax;
+        int wMax;
+
+        for (int i = 0; i < height; i++) {
+
+            if (0 == i) {
+                resultat = initialImage;
+                continue;
+            }
+
+            int h2 = resultat.getHeight();
+
+            hMax = h1 + h2;
+
+            resultat = new BufferedImage(w, hMax, BufferedImage.TYPE_INT_ARGB);
+            g2 = resultat.createGraphics();
+            g2.drawImage(initialImage, 0, 0, null);
+            g2.drawImage(resultat, 0, h1, null);
+
+        }
+
+        return resultat;
     }
 
     public BufferedImage append(BufferedImage img1, BufferedImage img2, DirectionEnum directionEnum) {
