@@ -7,15 +7,18 @@ import pojo.ActionEnum;
 import pojo.CroppedType;
 import pojo.DirectionEnum;
 import services.ManipulationImages;
+import services.ManipulationVideo;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
 
     static ManipulationImages manipulationImages = new ManipulationImages();
+    static ManipulationVideo manipulationVideo = new ManipulationVideo();
     static Java2DFrameConverter converter = new Java2DFrameConverter();
 
 
@@ -23,13 +26,13 @@ public class Main {
     static String FORMAT_SORTIE_IMAGE = "png";
 
     //------IMAGE TO VIDEO
-    static String NOM_IMAGE = "defense";
+    static String NOM_IMAGE = "2test2";
     static String URL_IMAGE = "C:/Users/lucia/Documents/Alexis/image/" + NOM_IMAGE + ".jpg";
 
 
     static String DOSSIER_IMAGES_SORTIE = "C:/Users/lucia/Documents/Alexis/resultats/imageToVideo/" + NOM_IMAGE;
     static String FORMAT_SORTIE_VIDEO = "mp4";
-    static String URL_VIDEO_SORTIE = "C:/Users/lucia/Documents/Alexis/resultats/img" + System.currentTimeMillis() + "." + FORMAT_SORTIE_VIDEO;
+    static String URL_VIDEO_SORTIE = DOSSIER_IMAGES_SORTIE + "/00" + NOM_IMAGE + "." + FORMAT_SORTIE_VIDEO;
 
 
     //------VIDEO TO IMAGE
@@ -112,15 +115,20 @@ public class Main {
 
         new File(DOSSIER_IMAGES_SORTIE).mkdir();
 
+        ArrayList<BufferedImage> bufferedImagesList = new ArrayList<BufferedImage>();
+
         for (int i = 1; i < bufferedImage.getHeight(); i++) {
             BufferedImage croppedImage = manipulationImages.cropOneLinePixel(bufferedImage, i);
 
             bufferedImageFinal = manipulationImages.appendFullHeight(croppedImage);
 
+            bufferedImagesList.add(bufferedImageFinal);
 
             ImageIO.write(bufferedImageFinal, FORMAT_SORTIE_IMAGE, new File(DOSSIER_IMAGES_SORTIE + "/" + "img" + i + "." + FORMAT_SORTIE_IMAGE));
 
             System.out.println("*** " + i + " / " + bufferedImage.getHeight() + " ***");
         }
+
+        manipulationVideo.getVideoFromListBufferedImages(URL_VIDEO_SORTIE, bufferedImagesList);
     }
 }
